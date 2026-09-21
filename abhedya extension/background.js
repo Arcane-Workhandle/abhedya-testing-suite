@@ -3,7 +3,7 @@
  * Coordinates threat syncs, memory caching, and API routing.
  */
 
-const CLOUD_ENGINE_URL = "https://project-abhedya-6fnx.onrender.com";
+const CLOUD_ENGINE_URL = "https://project-abhedya-6fnx.onrender.com/analyze";
 const OPENPHISH_FEED_URL = "https://openphish.com/feed.txt";
 const SYNC_ALARM_NAME = "DailyThreatSync";
 const SYNC_INTERVAL_MINUTES = 1440;

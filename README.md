@@ -63,7 +63,7 @@ As a beta tester, your feedback directly tunes our heuristic weightings and AI d
 
 Please report issues using our centralized submission form:
 
-### 👉 **[Submit an Abhedya Beta Issue / Feedback Report](https://forms.gle/YOUR_FORM_ID_HERE)**
+### 👉 **https://forms.gle/q1WQzMXTKK36NniV7**
 
 ### What to Report:
 * ⚠️ **False Positives:** A legitimate, safe website was incorrectly intercepted by the red block screen.

@@ -5,98 +5,135 @@
 
 console.info("[Abhedya] Edge Shield content monitoring active.");
 
-const GOOGLE_FORM_URL = "https://forms.gle/YOUR_FORM_ID_HERE";
-
 /**
- * Extracts payload data from the live document and sends it to the service worker.
+ * Extracts payload data from the live document and sends it to the background worker.
  */
 function initiateAbhedyaScan() {
-  console.info("[Abhedya] Document is visible. Initiating heuristic inspection...");
+    console.info("[Abhedya] Document active. Initiating threat inspection...");
 
-  const payload = {
-    action: "analyzeHTML",
-    url: window.location.href,
-    html: document.documentElement.outerHTML.substring(0, 5000)
-  };
-
-  chrome.runtime.sendMessage(payload, (response) => {
-    if (!response || response.error) {
-      console.warn("[Abhedya] Cloud analysis unavailable or timed out.");
-      return;
+    // Ensure document and body exist before attempting scan
+    if (!document.documentElement) {
+        setTimeout(initiateAbhedyaScan, 200);
+        return;
     }
 
-    const { ensemble_score, raw_scores, ai_analysis } = response;
+    const payload = {
+        action: "analyzeHTML",
+        url: window.location.href,
+        html: document.documentElement.outerHTML.substring(0, 5000)
+    };
 
-    chrome.storage.local.get({ protectionMode: 65 }, (settings) => {
-      const threshold = settings.protectionMode;
+    chrome.runtime.sendMessage(payload, (response) => {
+        if (chrome.runtime.lastError) {
+            console.warn("[Abhedya] Runtime communication error:", chrome.runtime.lastError.message);
+            return;
+        }
 
-      console.info(`[Abhedya] Evaluation complete | Score: ${ensemble_score} | Threshold: ${threshold}`);
+        if (!response || response.error) {
+            console.warn("[Abhedya] Cloud analysis unavailable or timed out:", response?.error);
+            return;
+        }
 
-      if (ensemble_score > threshold) {
-        renderBlockScreen(ensemble_score, threshold, raw_scores, ai_analysis.reason);
-      }
+        const score = Number(response.ensemble_score ?? 0);
+        const rawScores = response.raw_scores || { url_risk: 0, ssl_risk: 0, dom_risk: 0, gemini_risk: 0 };
+        const reason = response.ai_analysis?.reason || response.ai_analysis?.verdict || "Critical heuristic or brand impersonation indicators exceeded safe parameters.";
+
+        // Safeguard threshold extraction with strict Number casting
+        chrome.storage.local.get({ protectionMode: 65 }, (settings) => {
+            const threshold = Number(settings.protectionMode) || 65;
+
+            console.info(`[Abhedya] Scan Result | Score: ${score} | Threshold: ${threshold}`);
+
+            // Enforce block if score exceeds threshold OR if the score is explicitly 100
+            if (score > threshold || score === 100) {
+                renderBlockScreen(score, threshold, rawScores, reason);
+            }
+        });
     });
-  });
 }
 
 /**
  * Replaces page DOM with the standardized zero-day security block screen.
- * @param {number} score Master ensemble score.
- * @param {number} threshold Current user threshold.
- * @param {Object} rawScores Breakdown of sub-engine calculations.
- * @param {string} reason Summary provided by the AI engine.
  */
 function renderBlockScreen(score, threshold, rawScores, reason) {
-  document.body.style.overflow = "hidden";
+    const attachBlockScreen = () => {
+        if (!document.body) {
+            setTimeout(attachBlockScreen, 50);
+            return;
+        }
 
-  const formPrefillUrl = `${GOOGLE_FORM_URL}?usp=pp_url`;
+        document.body.style.overflow = "hidden";
 
-  document.body.innerHTML = `
-    <div class="abhedya-block-overlay">
-      <h1 class="abhedya-alert-heading">Connection Blocked</h1>
-      <h2 class="abhedya-alert-subheading">Abhedya Adaptive Shield Triggered</h2>
-      
-      <div class="abhedya-modal-card">
-        <div class="abhedya-score-header">
-          <p class="abhedya-score-title">Ensemble Threat Score</p>
-          <span class="abhedya-score-value">${score}/100</span>
-        </div>
+        // Prevent underlying page scripts from manipulating scroll or body
+        document.documentElement.style.overflow = "hidden";
 
-        <p class="abhedya-description">
-          Active threshold is configured to <strong>${threshold}</strong>. This destination presents an unacceptable risk profile.
-        </p>
-        
-        <div class="abhedya-telemetry-box">
-          <div class="abhedya-telemetry-title">[ System Telemetry Breakdown ]</div>
-          <div class="abhedya-telemetry-row"><span>> URL Risk Metric:</span><span>${rawScores.url_risk}/100</span></div>
-          <div class="abhedya-telemetry-row"><span>> SSL/TLS Risk Metric:</span><span>${rawScores.ssl_risk}/100</span></div>
-          <div class="abhedya-telemetry-row"><span>> DOM Risk Metric:</span><span>${rawScores.dom_risk}/100</span></div>
-          <div class="abhedya-telemetry-row"><span>> AI Analysis Metric:</span><span>${rawScores.gemini_risk}/100</span></div>
-        </div>
+        document.body.innerHTML = `
+            <div class="abhedya-block-overlay">
+                <div class="abhedya-badge">
+                    <span class="abhedya-pulse-dot"></span>
+                    Threat Intercept Protocol Active
+                </div>
 
-        <div class="abhedya-verdict-box">
-          <strong>Security Analysis:</strong> ${reason}
-        </div>
+                <h1 class="abhedya-alert-heading">Access Quarantined</h1>
+                <div class="abhedya-alert-subheading">ABHEDYA // ZERO-DAY EDGE DEFENSE</div>
+                
+                <div class="abhedya-modal-card">
+                    <div class="abhedya-score-header">
+                        <div class="abhedya-score-meta">
+                            <span class="abhedya-score-title">Ensemble Risk Matrix</span>
+                            <span class="abhedya-score-threshold">Policy Threshold: ${threshold}</span>
+                        </div>
+                        <div class="abhedya-score-value">
+                            ${score}<span class="abhedya-score-total">/100</span>
+                        </div>
+                    </div>
 
-        <div class="abhedya-action-footer">
-          <a class="abhedya-btn-report" href="${formPrefillUrl}" target="_blank" rel="noopener noreferrer">
-            Report False Positive
-          </a>
-        </div>
-      </div>
-    </div>
-  `;
+                    <div class="abhedya-telemetry-box">
+                        <div class="abhedya-telemetry-header">
+                            <span>[ Vector Telemetry ]</span>
+                            <span>STATUS: BLOCKED</span>
+                        </div>
+                        <div class="abhedya-telemetry-grid">
+                            <div class="abhedya-telemetry-item">
+                                <span class="abhedya-metric-label">> URL Entropy</span>
+                                <span class="abhedya-metric-value">${rawScores.url_risk ?? 0}/100</span>
+                            </div>
+                            <div class="abhedya-telemetry-item">
+                                <span class="abhedya-metric-label">> SSL/TLS Chain</span>
+                                <span class="abhedya-metric-value">${rawScores.ssl_risk ?? 0}/100</span>
+                            </div>
+                            <div class="abhedya-telemetry-item">
+                                <span class="abhedya-metric-label">> DOM Obfuscation</span>
+                                <span class="abhedya-metric-value">${rawScores.dom_risk ?? 0}/100</span>
+                            </div>
+                            <div class="abhedya-telemetry-item">
+                                <span class="abhedya-metric-label">> AI Vision Intent</span>
+                                <span class="abhedya-metric-value">${rawScores.gemini_risk ?? 0}/100</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="abhedya-verdict-box">
+                        <span class="abhedya-verdict-label">[ Threat Diagnostic Summary ]</span>
+                        <p class="abhedya-verdict-text">${reason}</p>
+                    </div>
+                </div>
+            </div>
+        `;
+    };
+
+    attachBlockScreen();
 }
 
 // Coordinate tab visibility triggers
 if (document.visibilityState === "visible") {
-  initiateAbhedyaScan();
+    initiateAbhedyaScan();
 } else {
-  const onVisibilityChange = () => {
-    if (document.visibilityState === "visible") {
-      document.removeEventListener("visibilitychange", onVisibilityChange);
-      setTimeout(initiateAbhedyaScan, 500);
-    }
-  };
-  document.addEventListener("visibilitychange", onVisibilityChange);
+    const onVisibilityChange = () => {
+        if (document.visibilityState === "visible") {
+            document.removeEventListener("visibilitychange", onVisibilityChange);
+            setTimeout(initiateAbhedyaScan, 400);
+        }
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
 }

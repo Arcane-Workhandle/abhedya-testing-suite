@@ -1,16 +1,18 @@
 /**
- * Abhedya Edge Shield - Interceptor Overlay Stylesheet
+ * Abhedya Edge Shield - High-Precision Interceptor Stylesheet
  */
 
 :root {
-  --abhedya-bg-dark: #0f172a;
-  --abhedya-bg-panel: #1e293b;
-  --abhedya-border: #334155;
-  --abhedya-text-main: #e2e8f0;
-  --abhedya-text-muted: #94a3b8;
-  --abhedya-danger: #ef4444;
-  --abhedya-accent: #38bdf8;
-  --abhedya-font: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+  --abhedya-bg: #201E1F;
+  --abhedya-card-bg: #262425;
+  --abhedya-terminal-bg: #191819;
+  --abhedya-critical: #FF4000;
+  --abhedya-teal: #50B2C0;
+  --abhedya-peach: #FAAA8D;
+  --abhedya-cream: #FEEFDD;
+  --abhedya-border: rgba(80, 178, 192, 0.25);
+  --abhedya-font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  --abhedya-font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 .abhedya-block-overlay {
@@ -19,137 +21,190 @@
   left: 0 !important;
   width: 100vw !important;
   height: 100vh !important;
-  background-color: var(--abhedya-bg-dark) !important;
-  color: var(--abhedya-text-main) !important;
-  font-family: var(--abhedya-font) !important;
+  background-color: var(--abhedya-bg) !important;
+  color: var(--abhedya-cream) !important;
+  font-family: var(--abhedya-font-sans) !important;
   display: flex !important;
   flex-direction: column !important;
   justify-content: center !important;
   align-items: center !important;
   z-index: 2147483647 !important;
   box-sizing: border-box !important;
-  padding: 20px !important;
+  padding: 24px !important;
+  background-image: 
+    radial-gradient(circle at 50% 20%, rgba(255, 64, 0, 0.08) 0%, transparent 60%),
+    linear-gradient(rgba(32, 30, 31, 0.96), rgba(32, 30, 31, 0.96)),
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.2) 2px, rgba(0, 0, 0, 0.2) 4px) !important;
+}
+
+/* Technical Protocol Badge */
+.abhedya-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  background: rgba(255, 64, 0, 0.12) !important;
+  border: 1px solid var(--abhedya-critical) !important;
+  color: var(--abhedya-critical) !important;
+  font-family: var(--abhedya-font-mono) !important;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.14em !important;
+  padding: 6px 14px !important;
+  border-radius: 4px !important;
+  text-transform: uppercase !important;
+  margin-bottom: 12px !important;
+}
+
+.abhedya-pulse-dot {
+  width: 7px !important;
+  height: 7px !important;
+  background-color: var(--abhedya-critical) !important;
+  border-radius: 50% !important;
+  box-shadow: 0 0 8px var(--abhedya-critical) !important;
 }
 
 .abhedya-alert-heading {
-  font-size: 3.5rem !important;
+  font-size: 2.2rem !important;
   font-weight: 800 !important;
-  margin: 0 0 8px 0 !important;
-  color: var(--abhedya-danger) !important;
-  text-transform: uppercase !important;
-  letter-spacing: 1px !important;
-  line-height: 1.1 !important;
+  margin: 0 0 6px 0 !important;
+  color: var(--abhedya-cream) !important;
+  letter-spacing: -0.02em !important;
   text-align: center !important;
 }
 
 .abhedya-alert-subheading {
-  font-size: 1.6rem !important;
-  font-weight: 500 !important;
+  font-family: var(--abhedya-font-mono) !important;
+  font-size: 0.92rem !important;
   margin: 0 0 28px 0 !important;
-  color: var(--abhedya-accent) !important;
+  color: var(--abhedya-teal) !important;
   text-align: center !important;
+  letter-spacing: 0.05em !important;
 }
 
+/* Security Dossier Card */
 .abhedya-modal-card {
-  background-color: var(--abhedya-bg-panel) !important;
-  padding: 28px !important;
-  border-radius: 10px !important;
-  border-left: 5px solid var(--abhedya-danger) !important;
+  background-color: var(--abhedya-card-bg) !important;
+  border: 1px solid var(--abhedya-border) !important;
+  border-left: 4px solid var(--abhedya-critical) !important;
+  border-radius: 6px !important;
   width: 100% !important;
-  max-width: 620px !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6) !important;
+  max-width: 640px !important;
+  padding: 24px 28px !important;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6) !important;
   box-sizing: border-box !important;
-  text-align: left !important;
 }
 
 .abhedya-score-header {
   display: flex !important;
   justify-content: space-between !important;
-  align-items: center !important;
-  border-bottom: 1px solid var(--abhedya-border) !important;
+  align-items: baseline !important;
+  border-bottom: 1px solid rgba(80, 178, 192, 0.2) !important;
   padding-bottom: 14px !important;
   margin-bottom: 14px !important;
 }
 
+.abhedya-score-meta {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
 .abhedya-score-title {
-  font-size: 1.15rem !important;
+  font-size: 1rem !important;
   font-weight: 700 !important;
-  margin: 0 !important;
-  color: var(--abhedya-text-main) !important;
+  color: var(--abhedya-cream) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  margin: 0 0 4px 0 !important;
+}
+
+.abhedya-score-threshold {
+  font-family: var(--abhedya-font-mono) !important;
+  font-size: 0.78rem !important;
+  color: var(--abhedya-peach) !important;
 }
 
 .abhedya-score-value {
-  font-size: 2.2rem !important;
+  font-family: var(--abhedya-font-mono) !important;
+  font-size: 2.6rem !important;
   font-weight: 800 !important;
-  color: var(--abhedya-danger) !important;
+  color: var(--abhedya-critical) !important;
+  letter-spacing: -0.04em !important;
 }
 
-.abhedya-description {
-  font-size: 0.95rem !important;
-  color: var(--abhedya-text-muted) !important;
-  margin: 0 0 18px 0 !important;
-  line-height: 1.5 !important;
+.abhedya-score-total {
+  font-size: 1.1rem !important;
+  color: var(--abhedya-peach) !important;
+  font-weight: 400 !important;
 }
 
+/* Telemetry Grid Box */
 .abhedya-telemetry-box {
-  background-color: var(--abhedya-bg-dark) !important;
-  padding: 14px 18px !important;
-  border-radius: 6px !important;
-  font-family: monospace !important;
-  font-size: 0.85rem !important;
-  color: #cbd5e1 !important;
-  border: 1px solid var(--abhedya-border) !important;
-  margin-bottom: 18px !important;
+  background-color: var(--abhedya-terminal-bg) !important;
+  border: 1px solid rgba(80, 178, 192, 0.2) !important;
+  border-radius: 4px !important;
+  padding: 14px 16px !important;
+  margin: 16px 0 !important;
+  font-family: var(--abhedya-font-mono) !important;
 }
 
-.abhedya-telemetry-title {
-  color: var(--abhedya-accent) !important;
-  font-weight: bold !important;
-  margin-bottom: 8px !important;
-}
-
-.abhedya-telemetry-row {
+.abhedya-telemetry-header {
   display: flex !important;
   justify-content: space-between !important;
-  margin-bottom: 4px !important;
-}
-
-.abhedya-telemetry-row:last-child {
-  margin-bottom: 0 !important;
-}
-
-.abhedya-verdict-box {
-  border-top: 1px solid var(--abhedya-border) !important;
-  padding-top: 14px !important;
-  margin-top: 14px !important;
-  font-size: 0.95rem !important;
-  line-height: 1.5 !important;
-  color: var(--abhedya-text-main) !important;
-}
-
-.abhedya-action-footer {
-  display: flex !important;
-  justify-content: flex-end !important;
-  gap: 12px !important;
-  margin-top: 20px !important;
-}
-
-.abhedya-btn-report {
-  display: inline-flex !important;
   align-items: center !important;
-  justify-content: center !important;
-  background-color: var(--abhedya-accent) !important;
-  color: var(--abhedya-bg-dark) !important;
-  padding: 10px 18px !important;
-  border-radius: 6px !important;
-  text-decoration: none !important;
+  color: var(--abhedya-teal) !important;
+  font-size: 0.75rem !important;
   font-weight: 700 !important;
-  font-size: 0.88rem !important;
-  transition: opacity 0.2s ease !important;
-  border: none !important;
-  cursor: pointer !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  border-bottom: 1px dashed rgba(80, 178, 192, 0.2) !important;
+  padding-bottom: 8px !important;
+  margin-bottom: 10px !important;
 }
 
-.abhedya-btn-report:hover {
-  opacity: 0.9 !important;
+.abhedya-telemetry-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 8px 24px !important;
+}
+
+.abhedya-telemetry-item {
+  display: flex !important;
+  justify-content: space-between !important;
+  font-size: 0.82rem !important;
+}
+
+.abhedya-metric-label {
+  color: var(--abhedya-peach) !important;
+}
+
+.abhedya-metric-value {
+  color: var(--abhedya-cream) !important;
+  font-weight: 600 !important;
+}
+
+/* Security Analysis Narrative */
+.abhedya-verdict-box {
+  background: rgba(80, 178, 192, 0.06) !important;
+  border-left: 2px solid var(--abhedya-teal) !important;
+  padding: 12px 14px !important;
+  margin-top: 16px !important;
+  border-radius: 0 4px 4px 0 !important;
+}
+
+.abhedya-verdict-label {
+  display: block !important;
+  font-family: var(--abhedya-font-mono) !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  color: var(--abhedya-teal) !important;
+  text-transform: uppercase !important;
+  margin-bottom: 6px !important;
+}
+
+.abhedya-verdict-text {
+  font-size: 0.88rem !important;
+  line-height: 1.55 !important;
+  color: var(--abhedya-cream) !important;
+  margin: 0 !important;
 }
